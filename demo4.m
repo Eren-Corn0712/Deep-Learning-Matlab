@@ -14,20 +14,27 @@ fprintf('Y train size is  [%d x %d]\n',size(YTrain));
 fprintf('Y test size is  [%d x %d]\n',size(YTest));
 fprintf('X Validation size is  [%d x %d x %d x %d]\n',size(XValidation));
 fprintf('Y Validation size is  [%d x %d]\n',size(YValidation));
+
+%% show mnist
+figure;
+perm = randperm(size(XTrain, 4), 20);
+for i = 1:20
+    subplot(4,5,i);
+    imshow(XTrain(:, :, :, perm(1, i)));
+end
 %% Layer define
 layers = [
     imageInputLayer([28 28 1],"Name","imageinput")
-    convolution2dLayer([7 7],32,"Name","conv_1")
+    convolution2dLayer([7 7],48,"Name","conv_1")
+    batchNormalizationLayer("Name","batchnorm_1")
     reluLayer("Name","relu_1")
-    convolution2dLayer([7 7],32,"Name","conv_2")
+    convolution2dLayer([5 5],32,"Name","conv_2")
+    batchNormalizationLayer("Name","batchnorm_2")
     reluLayer("Name","relu_2")
     maxPooling2dLayer([2 2],"Name","maxpool","Padding","same","Stride",[2 2])
-    batchNormalizationLayer("Name","batchnorm_1")
-    convolution2dLayer([5 5],32,"Name","conv_3")
+    convolution2dLayer([3 3],32,"Name","conv_3")
+    batchNormalizationLayer("Name","batchnorm_3")
     reluLayer("Name","relu_3")
-    convolution2dLayer([3 3],32,"Name","conv_4")
-    reluLayer("Name","relu_4")
-    batchNormalizationLayer("Name","batchnorm_2")
     fullyConnectedLayer(10,"Name","fc_2")
     softmaxLayer("Name","softmax")
     classificationLayer("Name","classoutput")];
